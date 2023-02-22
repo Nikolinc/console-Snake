@@ -3,7 +3,8 @@ const React = require("react");
 const { useState, useEffect, useContext } = require("react");
 const { Text, Box, useInput } = require("ink");
 const useInterval = require("./useInteval");
-
+const importJsx = require("import-jsx");
+const EndScreen = importJsx("./endScreen.js");
 const FIELD_SIZE = 16;
 const FIELD_ROW = [...new Array(FIELD_SIZE).keys()];
 
@@ -93,26 +94,39 @@ const App = () => {
 		}
 	});
 
-	useInterval(() => {
-		setSnakeSegments((segments) => newSnakePosition(segments, direction));
-	}, 50);
+	const [head, ...tail] = snakeSegments;
+
+	const intersectsWithItself = tail.some(
+		(segment) => segment.x === head.x && segment.y === head.y
+	);
+
+	useInterval(
+		() => {
+			setSnakeSegments((segments) => newSnakePosition(segments, direction));
+		},
+		intersectsWithItself ? null : 50
+	);
 
 	return (
 		<Box flexDirection="column" alignItems="center">
 			<Text>
 				<Text color="green">Snake</Text> Game
 			</Text>
-			<Box flexDirection="column">
-				{FIELD_ROW.map((y) => (
-					<Box key={y}>
-						{FIELD_ROW.map((x) => (
-							<Box key={x}>
-								<Text>{getItem(x, y, snakeSegments) || " . "}</Text>
-							</Box>
-						))}
-					</Box>
-				))}
-			</Box>
+			{intersectsWithItself ? (
+				<EndScreen size={FIELD_SIZE} />
+			) : (
+				<Box flexDirection="column">
+					{FIELD_ROW.map((y) => (
+						<Box key={y}>
+							{FIELD_ROW.map((x) => (
+								<Box key={x}>
+									<Text>{getItem(x, y, snakeSegments) || " . "}</Text>
+								</Box>
+							))}
+						</Box>
+					))}
+				</Box>
+			)}
 		</Box>
 	);
 };
