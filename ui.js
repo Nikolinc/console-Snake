@@ -1,7 +1,7 @@
 "use strict";
 const React = require("react");
 const { useState, useEffect, useContext } = require("react");
-const { Text, Box, } = require("ink");
+const { Text, Box, useInput } = require("ink");
 const useInterval = require("./useInteval");
 
 const FIELD_SIZE = 16;
@@ -81,7 +81,27 @@ const App = () => {
 	// 	});
 	// }, []);
 
-	
+	useInput((input, key) => {
+		if (input === "q") {
+			exit();
+		}
+
+		if (key.leftArrow) {
+			setDirection(Direction.LEFT);
+		}
+
+		if (key.rightArrow) {
+			setDirection(Direction.RIGHT);
+		}
+
+		if (key.upArrow) {
+			setDirection(Direction.TOP);
+		}
+
+		if (key.downArrow) {
+			setDirection(Direction.B0TTON);
+		}
+	});
 
 	useInterval(() => {
 		setSnakeSegments((segments) => newSnakePosition(segments, direction));
