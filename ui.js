@@ -48,7 +48,18 @@ function newSnakePosition(segments, direction) {
 		y: limitByField(head.y + direction.y),
 	};
 
+	if (collidesWithFood(newHead, foodItem)) {
+		foodItem = {
+			x: Math.floor(Math.random() * FIELD_SIZE),
+			y: Math.floor(Math.random() * FIELD_SIZE),
+		};
+		return [newHead, ...segments];
+	}
 	return [newHead, ...segments.slice(0, -1)];
+}
+
+function collidesWithFood(head, foodItem) {
+	return head.x === foodItem.x && head.y == foodItem.y;
 }
 
 const App = () => {
@@ -59,27 +70,6 @@ const App = () => {
 	]);
 
 	const [direction, setDirection] = useState(Direction.LEFT);
-
-	// const [stdin, setRawMode] = useContext(StdinContext);
-
-	// useEffect(() => {
-	// 	setRawMode(true);
-	// 	stdin.on("data", (data) => {
-	// 		const value = data.toString();
-	// 		if (value == ARROW_UP) {
-	// 			setDirection(Direction.TOP);
-	// 		}
-	// 		if (value == ARROW_DOWN) {
-	// 			setDirection(Direction.B0TTON);
-	// 		}
-	// 		if (value == ARROW_LEFT) {
-	// 			setDirection(Direction.LEFT);
-	// 		}
-	// 		if (value == ARROW_RIGTH) {
-	// 			setDirection(Direction.RIGHT);
-	// 		}
-	// 	});
-	// }, []);
 
 	useInput((input, key) => {
 		if (input === "q") {
